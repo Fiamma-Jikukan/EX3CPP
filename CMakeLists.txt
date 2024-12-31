@@ -3,4 +3,8 @@ project(EX3CPP)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(EX3CPP main.cpp)
+add_executable(EX3CPP main.cpp
+        Cell.cpp
+        Cell.h
+        Forest.cpp
+        Forest.h)
