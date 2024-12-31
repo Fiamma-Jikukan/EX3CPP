@@ -3,6 +3,9 @@
 Cell::Cell(unsigned int x, unsigned int y, unsigned int numOfDrones): x(x), y(y), numOfDrones(numOfDrones) {
 }
 
+Cell::Cell(): x(0), y(0), numOfDrones(0) {
+}
+
 Cell::~Cell() = default;
 
 Cell::Cell(const Cell &other)
@@ -44,27 +47,35 @@ unsigned int Cell::getX() const {
     return x;
 }
 
+void Cell::setX(unsigned int x) {
+    this->x = x;
+}
+
 unsigned int Cell::getY() const {
     return y;
 }
 
-Cell & Cell::operator++() {
+void Cell::setY(unsigned int y) {
+    this->y = y;
+}
+
+Cell &Cell::operator++() {
     numOfDrones++;
     return *this;
 }
 
-Cell & Cell::operator++(unsigned int) {
+Cell &Cell::operator++(unsigned int) {
     Cell temp = *this;
     numOfDrones++;
     return temp;
 }
 
-Cell & Cell::operator--() {
+Cell &Cell::operator--() {
     numOfDrones--;
     return *this;
 }
 
-Cell & Cell::operator--(unsigned int) {
+Cell &Cell::operator--(unsigned int) {
     Cell temp = *this;
     numOfDrones--;
     return temp;

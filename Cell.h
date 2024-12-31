@@ -10,6 +10,7 @@ private:
 
 public:
     Cell(unsigned int x, unsigned int y, unsigned int numOfDrones);
+    Cell();
 
     ~Cell();
 
@@ -22,8 +23,10 @@ public:
     Cell &operator=(Cell &&other) noexcept;
 
     unsigned int getX() const;
+    void setX(unsigned int x);
 
     unsigned int getY() const;
+    void setY(unsigned int y);
 
     unsigned int getNumOfDrones() const;
 

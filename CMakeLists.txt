@@ -7,4 +7,6 @@ add_executable(EX3CPP main.cpp
         Cell.cpp
         Cell.h
         Forest.cpp
-        Forest.h)
+        Forest.h
+        Drone.cpp
+        Drone.h)
