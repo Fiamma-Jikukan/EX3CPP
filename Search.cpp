@@ -1,5 +1,6 @@
 #include "Search.h"
 
+#include <fstream>
 #include <iostream>
 
 // Search::Search(unsigned int numOfDrones, Drone *drones, Forest &forest, unsigned int globalBest,
@@ -34,9 +35,10 @@ Search::~Search() {
 // }
 
 void Search::StartSearch() {
-    bool target_reached = false;
     unsigned int num_of_iterations = 0;
-    while (num_of_iterations < maxNumOfIter) {
+    cout << forest << endl;
+
+    while (num_of_iterations < 200) {
         for (int i = 0; i < numOfDrones; i++) {
             UpdateDrone(drones[i], i);
         }
@@ -44,41 +46,63 @@ void Search::StartSearch() {
             break;
         }
         num_of_iterations++;
+        cout  << endl;
+        cout << "from StartSearch:" << num_of_iterations << endl;
     }
-    EndSearch(num_of_iterations);
+
+    EndSearch(5);
 
 
 }
 
 void Search::EndSearch(unsigned int numOfIterations) {
-    // writes the output file, with the positions of all drones
+    ofstream outfile("final.dat");
+    outfile << numOfIterations << "\n";
+    for (int i = 0; i < numOfDrones; i++) {
+        outfile << drones[i].getPosition().getX() << " " << drones[i].getPosition().getY() << "\n";
+    }
 
 }
 
 void Search::UpdateDrone(Drone &drone, const unsigned int index) {
+
+    TDVector old_position = drone.getPosition();
+    Cell old_cell = drone.getCurrentCell();
+    double prev_distance = drone.getDistance((target));
+
     drone.moveDrone();
 
-    double distance = drone.getDistance(target);
-    double prev_distance = drone.getDistance(drone.getPersonalBest());
-    if (distance > prev_distance) {
+    double new_distance = drone.getDistance(target);
+    if (new_distance < prev_distance) {
         drone.setPersonalBest(drone.getPosition());
     }
 
-    const double best_distance = drones[globalBest].getDistance(target);
-    if (distance > best_distance) {
+    const double current_best_distance = drones[globalBest].getDistance(target);
+    if (new_distance > current_best_distance) {
         globalBest = index;
     }
 
-    Cell drone_cell = drone.getCurrentCell();
+    Cell new_cell = drone.getCurrentCell();
+
+
+
+    if (old_cell != new_cell) {
+        TDVector new_position = drone.getPosition();
+        forest.removeDroneFromCell(old_position);
+        forest.addDroneToCell(new_position);
+    }
     Cell target_cell = GetTargetCell();
-    if (drone_cell == target_cell) {
+    if (new_cell == target_cell) {
         ended = true;
     }
+
+    updateSpeed(drone);
+
 
 }
 
 
-void Search::updateSpeed(const Drone &drone) {
+void Search::updateSpeed( Drone &drone) {
     srand(time(NULL));
     const double r1 = (((double) rand()) / RAND_MAX);
     const double r2 = (((double) rand()) / RAND_MAX);
@@ -86,11 +110,17 @@ void Search::updateSpeed(const Drone &drone) {
     const TDVector personal = drone.getPersonalBest();
     const TDVector velocity = drone.getVelocity();
     const TDVector position = drone.getPosition();
-    cout << "r1 = " << r1 << " r2 = " << r2 << endl;
+    const TDVector global_position = drones[globalBest].getPosition();
 
-    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - position)) + (r2 * (drones[globalBest].getPosition() - position));
+    cout << "personal: " << personal<< " velocity: " << velocity << " position: " << position << " global position: " << global_position <<  endl;
 
+    // cout << "r1 = " << r1 << " r2 = " << r2 << endl;
+
+    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - position)) + (r2 * ( global_position- position));
+    // cout << " from update speed, old speed: " << velocity.getX() << "," << velocity.getY() << endl;
     drone.setVelocity(new_speed);
+    // cout << " from update speed, new speed: " << drone.getVelocity().getX() << "," << drone.getVelocity().getY() << endl;
+
 }
 
 unsigned int Search::GetGlobalBest() const {
@@ -110,4 +140,14 @@ Cell Search::GetTargetCell() const {
     const int y = target.getY();
     Cell cell(x, y, 0);
     return cell;
+}
+
+std::ostream & operator<<(std::ostream &os, const Search &search) {
+    for (unsigned int i = 0; i < search.GetNumOfDrones(); i++) {
+        os << search.drones[i];
+        if (search.globalBest == i) {
+            os << "this is the global best drone" << endl;
+        }
+    }
+    return os;
 }

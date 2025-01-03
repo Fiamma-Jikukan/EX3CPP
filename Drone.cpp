@@ -4,6 +4,8 @@
 #include <iostream>
 #include <utility>
 
+#include "Forest.h"
+
 
 Drone::Drone(): id(0), position(TDVector(0, 0)), velocity(TDVector(0, 0)), personalBest(0, 0) {
 }
@@ -59,8 +61,9 @@ void Drone::setPosition(const TDVector &position) {
 }
 
 
-void Drone::setVelocity(const TDVector &velocity) const{
-    this->velocity = velocity;
+void Drone::setVelocity(const TDVector &velocity) {
+    this->velocity.setX(velocity.getX());
+    this->velocity.setY(velocity.getY());
 }
 
 TDVector Drone::getVelocity() const {
@@ -88,21 +91,44 @@ void Drone::updateSpeed(const TDVector &globalBest) const {
     double r2 = (((double) rand()) / RAND_MAX);
     cout << "r1 = " << r1 << " r2 = " << r2 << endl;
     TDVector new_speed = (0.25 * velocity) + (r1 * (personalBest - position)) + (r2 * (globalBest - position));
+}
+
+
+void Drone::moveDrone() {
+    TDVector new_position = position + velocity;
+    double new_x = new_position.getX();
+    double new_y = new_position.getY();
+
+    if (new_x > FOREST_WIDTH) {
+        position.setX(FOREST_WIDTH);
+    } else {
+        position.setX(new_x);
+    }
+    if (new_x < 0) {
+        position.setX(0);
+    } else {
+        position.setX(new_x);
+    }
+
+    if (new_y > FOREST_HEIGHT) {
+        position.setY(FOREST_HEIGHT);
+    } else {
+        position.setY(new_y);
+    }
+    if (new_y < 0) {
+        position.setY(0);
+    } else {
+        position.setY(new_y);
+    }
+
 
 }
 
 double Drone::getDistance(const TDVector &target) const {
-    const double x_distance = position.getX() - target.getX();
-    const double y_distance = position.getY() - target.getY();
-    return sqrt(x_distance*x_distance + y_distance*y_distance);
+    const double x_distance = (position.getX() - target.getX()) * (position.getX() - target.getX());
+    const double y_distance = (position.getY() - target.getY()) * (position.getY() - target.getY());
+    return sqrt(x_distance + y_distance);
 }
-
-void Drone::moveDrone() {
-    position.setX(position.getX() + velocity.getX());
-    position.setY(position.getY() + velocity.getY());
-}
-
-
 
 ostream &operator<<(std::ostream &os, const Drone &drone) {
     os << "Drone number " << drone.id << " is in coordinate: " << drone.getPosition().getX() << ", " << drone.

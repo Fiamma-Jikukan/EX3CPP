@@ -1,5 +1,7 @@
 #ifndef SEARCH_H
 #define SEARCH_H
+#include <iostream>
+
 #include "Drone.h"
 #include "Forest.h"
 
@@ -43,7 +45,7 @@ public:
 
     void UpdateDrone(Drone &drone, unsigned int index);
 
-    void updateSpeed(const Drone &drone);
+    void updateSpeed(Drone &drone);
 
     unsigned int GetGlobalBest() const;
 
@@ -52,6 +54,12 @@ public:
     void UpdateGlobalBest(unsigned int newGlobalBest);
 
     Cell GetTargetCell() const;
+
+    unsigned int GetNumOfDrones() const {
+        return numOfDrones;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const Search &search);
 };
 
 

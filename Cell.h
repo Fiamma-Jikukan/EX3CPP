@@ -1,5 +1,6 @@
 #ifndef CELL_H
 #define CELL_H
+#include <ostream>
 
 using namespace std;
 
@@ -37,12 +38,17 @@ public:
 
     Cell &operator++();
 
-    Cell &operator++( int);
+    Cell &operator++(int);
 
     Cell &operator--();
 
-    Cell &operator--( int);
+    Cell &operator--(int);
+
     bool operator==(const Cell &other) const;
+
+    bool operator!=(const Cell &other) const;
+
+    friend ostream &operator<<(ostream &os, const Cell &other);
 };
 
 

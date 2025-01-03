@@ -1,5 +1,8 @@
 #include "Cell.h"
 
+#include <iostream>
+#include <ostream>
+
 Cell::Cell(unsigned int x, unsigned int y, unsigned int numOfDrones): x(x), y(y), numOfDrones(numOfDrones) {
 }
 
@@ -95,4 +98,19 @@ bool Cell::operator==(const Cell &other) const {
         return true;
     }
     return false;
+}
+
+bool Cell::operator!=(const Cell &other) const {
+    if (this == &other) {
+        return false;
+    }
+    if (this->x != other.x || this->y != other.y) {
+        return true;
+    }
+    return false;
+}
+
+ostream & operator<<(ostream &os, const Cell &other) {
+    os << "x: " << other.getX() << ", y: " << other.getY() << "Num of drones in cell: " << other.getNumOfDrones() << endl;
+    return os;
 }

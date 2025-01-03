@@ -1,5 +1,6 @@
 #ifndef TDVECTOR_H
 #define TDVECTOR_H
+#include <ostream>
 
 using namespace std;
 
@@ -66,7 +67,13 @@ public:
     friend bool operator!=(const TDVector &lhs, const TDVector &rhs) {
         return !(lhs == rhs);
     }
+
+    friend ostream &operator<<(ostream &os, const TDVector &vec) {
+        os << "(" << vec.x << ", " << vec.y << ")";
+        return os;
+    }
 };
+
 
 
 #endif //TDVECTOR_H

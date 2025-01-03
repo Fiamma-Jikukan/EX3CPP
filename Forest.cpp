@@ -1,5 +1,7 @@
 #include "Forest.h"
 
+#include <iostream>
+
 Forest::Forest(): cells(new Cell *[FOREST_WIDTH]) {
     for (int i = 0; i < FOREST_WIDTH; i++) {
         cells[i] = new Cell[FOREST_HEIGHT];
@@ -66,3 +68,41 @@ Forest &Forest::operator=(Forest &&other) noexcept {
 unsigned int Forest::operator()(const unsigned int x, const unsigned int y) const {
     return cells[y][x].getNumOfDrones();
 }
+
+void Forest::addDroneToCell(const TDVector& xy) const {
+    const unsigned int x = xy.getX();
+    const unsigned int y = xy.getY();
+    cout << "from addDroneToCell: " << x << "x y" << y << endl;
+    ++cells[y][x];
+}
+
+void Forest::removeDroneFromCell(const TDVector &xy) const {
+    const unsigned int x = xy.getX();
+    const unsigned int y = xy.getY();
+    cout << "from removeDroneFromCell: " << x << "x y" << y << endl;
+    --cells[y][x];
+}
+
+std::ostream & operator<<(std::ostream &os, const Forest &forest) {
+    os << "  ";
+    for (int i = 0; i < FOREST_WIDTH; i++) {
+        os << i ;
+    }
+    os << std::endl;
+
+    for (int y = 0; y < FOREST_HEIGHT ; y++) {
+        os << y << " ";
+        for (int x = 0; x < FOREST_WIDTH ; x++) {
+            unsigned int num = forest(y,x);
+            if (num == 0) {
+                os << "  ";
+            } else {
+                os << "("<< x << "," << y << ")" << " " ;
+            }
+        }
+        os << std::endl;
+    }
+    return os;
+}
+
+

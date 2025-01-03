@@ -40,7 +40,7 @@ public:
 
     TDVector getVelocity() const;
 
-    void setVelocity(const TDVector &velocity) const;
+    void setVelocity(const TDVector &velocity) ;
 
     TDVector getPersonalBest() const;
 
