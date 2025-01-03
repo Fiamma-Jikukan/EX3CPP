@@ -18,6 +18,9 @@ Cell::Cell(Cell &&other) noexcept
     : x(other.x),
       y(other.y),
       numOfDrones(other.numOfDrones) {
+    other.x = 0;
+    other.y = 0;
+    other.numOfDrones = 0;
 }
 
 Cell &Cell::operator=(const Cell &other) {
@@ -35,6 +38,9 @@ Cell &Cell::operator=(Cell &&other) noexcept {
     x = other.x;
     y = other.y;
     numOfDrones = other.numOfDrones;
+    other.x = 0;
+    other.y = 0;
+    other.numOfDrones = 0;
     return *this;
 }
 
@@ -47,7 +53,7 @@ unsigned int Cell::getX() const {
     return x;
 }
 
-void Cell::setX(unsigned int x) {
+void Cell::setX(const unsigned int x) {
     this->x = x;
 }
 
@@ -55,7 +61,7 @@ unsigned int Cell::getY() const {
     return y;
 }
 
-void Cell::setY(unsigned int y) {
+void Cell::setY(const unsigned int y) {
     this->y = y;
 }
 
@@ -64,7 +70,7 @@ Cell &Cell::operator++() {
     return *this;
 }
 
-Cell &Cell::operator++(unsigned int) {
+Cell &Cell::operator++( int) {
     Cell temp = *this;
     numOfDrones++;
     return temp;
@@ -75,8 +81,18 @@ Cell &Cell::operator--() {
     return *this;
 }
 
-Cell &Cell::operator--(unsigned int) {
+Cell &Cell::operator--( int) {
     Cell temp = *this;
     numOfDrones--;
     return temp;
+}
+
+bool Cell::operator==(const Cell &other) const {
+    if (this == &other) {
+        return true;
+    }
+    if (this->x == other.x && this->y == other.y) {
+        return true;
+    }
+    return false;
 }

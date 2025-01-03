@@ -9,4 +9,8 @@ add_executable(EX3CPP main.cpp
         Forest.cpp
         Forest.h
         Drone.cpp
-        Drone.h)
+        Drone.h
+        Search.cpp
+        Search.h
+        TDVector.cpp
+        TDVector.h)

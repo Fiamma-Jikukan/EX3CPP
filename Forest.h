@@ -14,6 +14,7 @@ public:
     Forest();
 
     ~Forest();
+
     void FreeData() const;
 
     Forest(const Forest &other);

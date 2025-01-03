@@ -1,6 +1,8 @@
 #ifndef CELL_H
 #define CELL_H
 
+using namespace std;
+
 
 class Cell {
 private:
@@ -10,6 +12,7 @@ private:
 
 public:
     Cell(unsigned int x, unsigned int y, unsigned int numOfDrones);
+
     Cell();
 
     ~Cell();
@@ -23,20 +26,23 @@ public:
     Cell &operator=(Cell &&other) noexcept;
 
     unsigned int getX() const;
+
     void setX(unsigned int x);
 
     unsigned int getY() const;
+
     void setY(unsigned int y);
 
     unsigned int getNumOfDrones() const;
 
     Cell &operator++();
 
-    Cell &operator++(unsigned int);
+    Cell &operator++( int);
 
     Cell &operator--();
 
-    Cell &operator--(unsigned int);
+    Cell &operator--( int);
+    bool operator==(const Cell &other) const;
 };
 
 

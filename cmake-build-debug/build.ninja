@@ -73,6 +73,18 @@ build CMakeFiles/EX3CPP.dir/Drone.cpp.o: CXX_COMPILER__EX3CPP_unscanned_Debug /c
   OBJECT_DIR = CMakeFiles/EX3CPP.dir
   OBJECT_FILE_DIR = CMakeFiles/EX3CPP.dir
 
+build CMakeFiles/EX3CPP.dir/Search.cpp.o: CXX_COMPILER__EX3CPP_unscanned_Debug /cygdrive/c/Users/User/CLionProjects/EX3CPP/Search.cpp || cmake_object_order_depends_target_EX3CPP
+  DEP_FILE = CMakeFiles/EX3CPP.dir/Search.cpp.o.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/EX3CPP.dir
+  OBJECT_FILE_DIR = CMakeFiles/EX3CPP.dir
+
+build CMakeFiles/EX3CPP.dir/TDVector.cpp.o: CXX_COMPILER__EX3CPP_unscanned_Debug /cygdrive/c/Users/User/CLionProjects/EX3CPP/TDVector.cpp || cmake_object_order_depends_target_EX3CPP
+  DEP_FILE = CMakeFiles/EX3CPP.dir/TDVector.cpp.o.d
+  FLAGS = -g -std=gnu++11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/EX3CPP.dir
+  OBJECT_FILE_DIR = CMakeFiles/EX3CPP.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target EX3CPP
@@ -81,7 +93,7 @@ build CMakeFiles/EX3CPP.dir/Drone.cpp.o: CXX_COMPILER__EX3CPP_unscanned_Debug /c
 #############################################
 # Link the executable EX3CPP.exe
 
-build EX3CPP.exe: CXX_EXECUTABLE_LINKER__EX3CPP_Debug CMakeFiles/EX3CPP.dir/main.cpp.o CMakeFiles/EX3CPP.dir/Cell.cpp.o CMakeFiles/EX3CPP.dir/Forest.cpp.o CMakeFiles/EX3CPP.dir/Drone.cpp.o
+build EX3CPP.exe: CXX_EXECUTABLE_LINKER__EX3CPP_Debug CMakeFiles/EX3CPP.dir/main.cpp.o CMakeFiles/EX3CPP.dir/Cell.cpp.o CMakeFiles/EX3CPP.dir/Forest.cpp.o CMakeFiles/EX3CPP.dir/Drone.cpp.o CMakeFiles/EX3CPP.dir/Search.cpp.o CMakeFiles/EX3CPP.dir/TDVector.cpp.o
   FLAGS = -g
   LINK_FLAGS = -Wl,--enable-auto-import
   OBJECT_DIR = CMakeFiles/EX3CPP.dir
