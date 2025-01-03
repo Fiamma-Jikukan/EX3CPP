@@ -85,14 +85,6 @@ Cell Drone::getCurrentCell() const {
     return cell;
 }
 
-void Drone::updateSpeed(const TDVector &globalBest) const {
-    srand(time(NULL));
-    double r1 = (((double) rand()) / RAND_MAX);
-    double r2 = (((double) rand()) / RAND_MAX);
-    cout << "r1 = " << r1 << " r2 = " << r2 << endl;
-    TDVector new_speed = (0.25 * velocity) + (r1 * (personalBest - position)) + (r2 * (globalBest - position));
-}
-
 
 void Drone::moveDrone() {
     TDVector new_position = position + velocity;
@@ -100,34 +92,26 @@ void Drone::moveDrone() {
     double new_y = new_position.getY();
 
     if (new_x > FOREST_WIDTH) {
-        position.setX(FOREST_WIDTH);
-    } else {
-        position.setX(new_x);
+        new_x = FOREST_WIDTH;
+    } else if (new_x < 0) {
+        new_x = 0;
     }
-    if (new_x < 0) {
-        position.setX(0);
-    } else {
-        position.setX(new_x);
-    }
+    position.setX(new_x);
 
     if (new_y > FOREST_HEIGHT) {
-        position.setY(FOREST_HEIGHT);
-    } else {
-        position.setY(new_y);
+        new_y = FOREST_HEIGHT;
+    } else if (new_y < 0) {
+        new_y = 0;
     }
-    if (new_y < 0) {
-        position.setY(0);
-    } else {
-        position.setY(new_y);
-    }
+    position.setY(new_y);
 
 
 }
 
 double Drone::getDistance(const TDVector &target) const {
-    const double x_distance = (position.getX() - target.getX()) * (position.getX() - target.getX());
-    const double y_distance = (position.getY() - target.getY()) * (position.getY() - target.getY());
-    return sqrt(x_distance + y_distance);
+    // const double x_distance = (position.getX() - target.getX()) * (position.getX() - target.getX());
+    // const double y_distance = (position.getY() - target.getY()) * (position.getY() - target.getY());
+    return position * target;
 }
 
 ostream &operator<<(std::ostream &os, const Drone &drone) {

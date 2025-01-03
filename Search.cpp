@@ -35,24 +35,27 @@ Search::~Search() {
 // }
 
 void Search::StartSearch() {
+    srand(time(NULL));
     unsigned int num_of_iterations = 0;
     cout << forest << endl;
 
-    while (num_of_iterations < 200) {
+    while (num_of_iterations < 10000) {
         for (int i = 0; i < numOfDrones; i++) {
             UpdateDrone(drones[i], i);
         }
+
         if (ended) {
             break;
         }
         num_of_iterations++;
-        cout  << endl;
-        cout << "from StartSearch:" << num_of_iterations << endl;
+        cout << endl;
+
     }
+    cout << forest << endl;
+
+
 
     EndSearch(5);
-
-
 }
 
 void Search::EndSearch(unsigned int numOfIterations) {
@@ -61,33 +64,30 @@ void Search::EndSearch(unsigned int numOfIterations) {
     for (int i = 0; i < numOfDrones; i++) {
         outfile << drones[i].getPosition().getX() << " " << drones[i].getPosition().getY() << "\n";
     }
-
 }
 
 void Search::UpdateDrone(Drone &drone, const unsigned int index) {
-
-    TDVector old_position = drone.getPosition();
-    Cell old_cell = drone.getCurrentCell();
-    double prev_distance = drone.getDistance((target));
+    const TDVector old_position = drone.getPosition();
+    const Cell old_cell = drone.getCurrentCell();
+    const double prev_distance = drone.getDistance(target);
 
     drone.moveDrone();
 
-    double new_distance = drone.getDistance(target);
+    const double new_distance = drone.getDistance(target);
     if (new_distance < prev_distance) {
         drone.setPersonalBest(drone.getPosition());
     }
 
     const double current_best_distance = drones[globalBest].getDistance(target);
-    if (new_distance > current_best_distance) {
+    if (new_distance < current_best_distance) {
         globalBest = index;
     }
 
-    Cell new_cell = drone.getCurrentCell();
-
+    const Cell new_cell = drone.getCurrentCell();
 
 
     if (old_cell != new_cell) {
-        TDVector new_position = drone.getPosition();
+        const TDVector new_position = drone.getPosition();
         forest.removeDroneFromCell(old_position);
         forest.addDroneToCell(new_position);
     }
@@ -97,13 +97,10 @@ void Search::UpdateDrone(Drone &drone, const unsigned int index) {
     }
 
     updateSpeed(drone);
-
-
 }
 
 
-void Search::updateSpeed( Drone &drone) {
-    srand(time(NULL));
+void Search::updateSpeed(Drone &drone) {
     const double r1 = (((double) rand()) / RAND_MAX);
     const double r2 = (((double) rand()) / RAND_MAX);
 
@@ -112,15 +109,15 @@ void Search::updateSpeed( Drone &drone) {
     const TDVector position = drone.getPosition();
     const TDVector global_position = drones[globalBest].getPosition();
 
-    cout << "personal: " << personal<< " velocity: " << velocity << " position: " << position << " global position: " << global_position <<  endl;
+    cout << "personal: " << personal << " velocity: " << velocity << " position: " << position << " global position: "
+            << global_position << endl;
 
-    // cout << "r1 = " << r1 << " r2 = " << r2 << endl;
+    cout << "r1 = " << r1 << " r2 = " << r2 << endl;
 
-    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - position)) + (r2 * ( global_position- position));
+    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - position)) + (r2 * (global_position - position));
     // cout << " from update speed, old speed: " << velocity.getX() << "," << velocity.getY() << endl;
     drone.setVelocity(new_speed);
     // cout << " from update speed, new speed: " << drone.getVelocity().getX() << "," << drone.getVelocity().getY() << endl;
-
 }
 
 unsigned int Search::GetGlobalBest() const {
@@ -142,7 +139,7 @@ Cell Search::GetTargetCell() const {
     return cell;
 }
 
-std::ostream & operator<<(std::ostream &os, const Search &search) {
+std::ostream &operator<<(std::ostream &os, const Search &search) {
     for (unsigned int i = 0; i < search.GetNumOfDrones(); i++) {
         os << search.drones[i];
         if (search.globalBest == i) {

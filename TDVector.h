@@ -59,6 +59,9 @@ public:
 
     friend TDVector operator*(double scalar, const TDVector &vec);
 
+    friend double operator*(const TDVector &vec1, const TDVector &vec2);
+    // returns distance between 2 points
+
     friend bool operator==(const TDVector &lhs, const TDVector &rhs) {
         return lhs.x == rhs.x
                && lhs.y == rhs.y;

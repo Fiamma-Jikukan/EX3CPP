@@ -1,5 +1,7 @@
 #include "TDVector.h"
 
+#include <cmath>
+
 
 TDVector::TDVector(double x, double y): x(x), y(y) {
 }
@@ -30,4 +32,10 @@ TDVector TDVector::operator-(const TDVector &other) const {
 
 TDVector operator*(const double scalar, const TDVector &vec) {
      return TDVector(vec.getX() * scalar, vec.getY() * scalar);
+}
+
+double operator*(const TDVector &vec1, const TDVector &vec2) {
+    const double x = (vec1.getX() - vec2.getX()) * (vec1.getX() - vec2.getX());
+    const double y = (vec1.getY() - vec2.getY()) * (vec1.getY() - vec2.getY());
+    return sqrt(x + y);
 }

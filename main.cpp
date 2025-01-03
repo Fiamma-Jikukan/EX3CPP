@@ -30,6 +30,7 @@ int main(int argc, char **argv) {
     // GetDrones(argv[2]);
 
     const TDVector target = GetTarget("config.dat");
+    cout << target << endl;
     unsigned int maxIter = GetMaxIter("config.dat");
     Drone *drones = GetDrones("init.dat");
     unsigned int numOfDrones = GetNumOfDrones("init.dat");

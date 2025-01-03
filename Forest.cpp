@@ -97,7 +97,7 @@ std::ostream & operator<<(std::ostream &os, const Forest &forest) {
             if (num == 0) {
                 os << "  ";
             } else {
-                os << "("<< x << "," << y << ")" << " " ;
+                os << num << " " ;
             }
         }
         os << std::endl;
