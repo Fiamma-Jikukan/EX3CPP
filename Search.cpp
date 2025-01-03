@@ -3,43 +3,81 @@
 #include <fstream>
 #include <iostream>
 
-// Search::Search(unsigned int numOfDrones, Drone *drones, Forest &forest, unsigned int globalBest,
-//                TDVector &target): numOfDrones(numOfDrones), drones(drones), forest(forest), globalBest(globalBest),
-//                                   target(target) {
-// }
+
+Search::Search(unsigned int max_num_of_iter, unsigned int num_of_drones, Drone *drones, const Forest &forest,
+               unsigned int global_best, const TDVector &target, bool ended,
+               const string &outputFileName): maxNumOfIter(max_num_of_iter),
+                                              numOfDrones(num_of_drones),
+                                              drones(drones),
+                                              forest(forest),
+                                              globalBest(global_best),
+                                              target(target),
+                                              ended(ended),
+                                              outputFileName(outputFileName) {
+}
+
 
 Search::~Search() {
     delete []drones;
 }
 
+Search::Search(const Search &other) : maxNumOfIter(other.maxNumOfIter),
+                                      numOfDrones(other.numOfDrones),
+                                      drones(other.drones),
+                                      forest(other.forest),
+                                      globalBest(other.globalBest),
+                                      target(other.target),
+                                      ended(other.ended),
+                                      outputFileName(other.outputFileName) {
+}
 
-// Search::Search(const Search &other): drones(other.drones), globalBest(other.globalBest), target(other.target) {
-// }
-//
-// Search & Search::operator=(const Search &other) {
-//     if (this == &other) {
-//         return *this;
-//     }
-//     drones = other.drones;
-//     globalBest = other.globalBest;
-//     target = other.target;
-//     return *this;
-// }
-//
-// Search::Search(Search &&other) noexcept {
-//
-//
-// }
-//
-// Search & Search::operator=(Search &&other) noexcept {
-// }
+Search::Search(Search &&other) noexcept : maxNumOfIter(other.maxNumOfIter),
+                                      numOfDrones(other.numOfDrones),
+                                      drones(other.drones),
+                                      forest(std::move(other.forest)),
+                                      globalBest(other.globalBest),
+                                      target(std::move(other.target)),
+                                      ended(other.ended),
+                                      outputFileName(std::move(other.outputFileName)) {
+}
+
+
+Search &Search::operator=(const Search &other) {
+    if (this == &other)
+        return *this;
+    maxNumOfIter = other.maxNumOfIter;
+    numOfDrones = other.numOfDrones;
+    drones = other.drones;
+    forest = other.forest;
+    globalBest = other.globalBest;
+    target = other.target;
+    ended = other.ended;
+    outputFileName = other.outputFileName;
+    return *this;
+}
+
+Search &Search::operator=(Search &&other) noexcept {
+    if (this == &other)
+        return *this;
+    maxNumOfIter = other.maxNumOfIter;
+    numOfDrones = other.numOfDrones;
+    drones = other.drones;
+    forest = std::move(other.forest);
+    globalBest = other.globalBest;
+    target = std::move(other.target);
+    ended = other.ended;
+    outputFileName = std::move(other.outputFileName);
+
+    return *this;
+}
 
 void Search::StartSearch() {
     srand(time(NULL));
     unsigned int num_of_iterations = 0;
+
     cout << forest << endl;
 
-    while (num_of_iterations < 10000) {
+    while (num_of_iterations < maxNumOfIter) {
         for (int i = 0; i < numOfDrones; i++) {
             UpdateDrone(drones[i], i);
         }
@@ -48,18 +86,17 @@ void Search::StartSearch() {
             break;
         }
         num_of_iterations++;
-        cout << endl;
-
     }
+
     cout << forest << endl;
 
 
-
-    EndSearch(5);
+    EndSearch(num_of_iterations);
 }
 
 void Search::EndSearch(unsigned int numOfIterations) {
-    ofstream outfile("final.dat");
+    cout << numOfIterations << endl;
+    ofstream outfile(outputFileName);
     outfile << numOfIterations << "\n";
     for (int i = 0; i < numOfDrones; i++) {
         outfile << drones[i].getPosition().getX() << " " << drones[i].getPosition().getY() << "\n";
@@ -67,11 +104,14 @@ void Search::EndSearch(unsigned int numOfIterations) {
 }
 
 void Search::UpdateDrone(Drone &drone, const unsigned int index) {
-    const TDVector old_position = drone.getPosition();
+    TDVector old_position = drone.getPosition();
     const Cell old_cell = drone.getCurrentCell();
     const double prev_distance = drone.getDistance(target);
 
     drone.moveDrone();
+
+    updateSpeed(drone, old_position);
+
 
     const double new_distance = drone.getDistance(target);
     if (new_distance < prev_distance) {
@@ -95,26 +135,25 @@ void Search::UpdateDrone(Drone &drone, const unsigned int index) {
     if (new_cell == target_cell) {
         ended = true;
     }
-
-    updateSpeed(drone);
 }
 
 
-void Search::updateSpeed(Drone &drone) {
+void Search::updateSpeed(Drone &drone, TDVector &oldPosition) {
     const double r1 = (((double) rand()) / RAND_MAX);
     const double r2 = (((double) rand()) / RAND_MAX);
 
     const TDVector personal = drone.getPersonalBest();
     const TDVector velocity = drone.getVelocity();
-    const TDVector position = drone.getPosition();
     const TDVector global_position = drones[globalBest].getPosition();
 
-    cout << "personal: " << personal << " velocity: " << velocity << " position: " << position << " global position: "
-            << global_position << endl;
+    // cout << "personal: " << personal << " velocity: " << velocity << " position: " << oldPossition <<
+    //         " global position: "
+    //         << global_position << endl;
+    //
+    // cout << "r1 = " << r1 << " r2 = " << r2 << endl;
 
-    cout << "r1 = " << r1 << " r2 = " << r2 << endl;
-
-    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - position)) + (r2 * (global_position - position));
+    const TDVector new_speed = (0.25 * velocity) + (r1 * (personal - oldPosition)) + (
+                                   r2 * (global_position - oldPosition));
     // cout << " from update speed, old speed: " << velocity.getX() << "," << velocity.getY() << endl;
     drone.setVelocity(new_speed);
     // cout << " from update speed, new speed: " << drone.getVelocity().getX() << "," << drone.getVelocity().getY() << endl;

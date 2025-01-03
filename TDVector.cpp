@@ -6,6 +6,8 @@
 TDVector::TDVector(double x, double y): x(x), y(y) {
 }
 
+
+
 double TDVector::getX() const {
     return x;
 }

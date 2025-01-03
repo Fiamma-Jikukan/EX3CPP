@@ -8,6 +8,12 @@
 #include "TDVector.h"
 using namespace std;
 
+bool validateConfig(const string &config);
+
+bool validateInit(const string &init);
+
+bool validateOutput(const string &output);
+
 Drone *GetDrones(const string &input2);
 
 TDVector GetTarget(const string &input1);
@@ -23,11 +29,18 @@ unsigned int GetGlobalBest(const Drone *drones, const TDVector &target, unsigned
 double CalculateDistance(const TDVector &a, const TDVector &b);
 
 int main(int argc, char **argv) {
-    // if (argc != 2) {
-    //     cerr << "Usage: ./a.out <input file>" << endl;
-    //     return 1;
-    // }
-    // GetDrones(argv[2]);
+    if (argc != 4) {
+        cerr << "Error; invalid input" << endl;
+        return 1;
+    }
+
+    bool validConfig = validateConfig(argv[1]);
+    bool validInit = validateInit(argv[2]);
+    bool validOutput = validateOutput(argv[3]);
+    if (!validConfig || !validInit || !validOutput) {
+        cerr << "Error; invalid input" << endl;
+        return 1;
+    }
 
     const TDVector target = GetTarget("config.dat");
     cout << target << endl;
@@ -39,13 +52,73 @@ int main(int argc, char **argv) {
     for (unsigned int i = 0; i < numOfDrones; i++) {
         forest.addDroneToCell(drones[i].getPosition());
     }
-    Search search(maxIter, numOfDrones, drones, forest, globalBest, target, false);
+    string output = argv[3];
+    Search search(maxIter, numOfDrones, drones, forest, globalBest, target, false, output);
     cout << search << endl;
 
     search.StartSearch();
 
 
     return 0;
+}
+
+bool validateConfig(const string &config) {
+    ifstream config_file(config);
+    if (!config_file.is_open()) {
+        return false;
+    }
+    double target_x, target_y;
+    if (!(config_file >> target_x >> target_y)) {
+        return false;
+    }
+    if (target_x < 0 || target_y < 0 || target_x > FOREST_WIDTH || target_y > FOREST_HEIGHT) {
+        return false;
+    }
+    int max_iter;
+    if (!(config_file >> max_iter) || max_iter < 0) {
+        return false;
+    }
+    double extra_line;
+    if (config_file >> extra_line) {
+        return false;
+    }
+    return true;
+}
+
+bool validateInit(const string &init) {
+    ifstream init_file(init);
+    if (!init_file.is_open()) {
+        return false;
+    }
+    unsigned int num_of_drones;
+    if (!(init_file >> num_of_drones)) {
+        return false;
+    }
+    if (num_of_drones <= 0) {
+        return false;
+    }
+    for (unsigned int i = 0; i < num_of_drones; i++) {
+        double pos_x, pos_y, vel_x, vel_y;
+        if (!(init_file >> pos_x >> pos_y >> vel_x >> vel_y)) {
+            return false;
+        }
+        if (pos_x < 0 || pos_x > FOREST_WIDTH || pos_y < 0 || pos_y > FOREST_HEIGHT) {
+            return false;
+        }
+    }
+    double extra_data;
+    if (init_file >> extra_data) {
+        return false;
+    }
+    return true;
+}
+
+bool validateOutput(const string &output) {
+    ofstream output_file(output);
+    if (!output_file.is_open()) {
+        return false;
+    }
+    return true;
 }
 
 Drone *GetDrones(const string &input2) {

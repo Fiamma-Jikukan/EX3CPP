@@ -15,10 +15,7 @@ public:
 
     ~TDVector() = default;
 
-    TDVector(const TDVector &other)
-        : x(other.x),
-          y(other.y) {
-    }
+    TDVector(const TDVector &other) = default;
 
     TDVector(TDVector &&other) noexcept
         : x(other.x),

@@ -72,21 +72,19 @@ unsigned int Forest::operator()(const unsigned int x, const unsigned int y) cons
 void Forest::addDroneToCell(const TDVector& xy) const {
     const unsigned int x = xy.getX();
     const unsigned int y = xy.getY();
-    cout << "from addDroneToCell: " << x << "x y" << y << endl;
     ++cells[y][x];
 }
 
 void Forest::removeDroneFromCell(const TDVector &xy) const {
     const unsigned int x = xy.getX();
     const unsigned int y = xy.getY();
-    cout << "from removeDroneFromCell: " << x << "x y" << y << endl;
     --cells[y][x];
 }
 
 std::ostream & operator<<(std::ostream &os, const Forest &forest) {
     os << "  ";
     for (int i = 0; i < FOREST_WIDTH; i++) {
-        os << i ;
+        os << i << " ";
     }
     os << std::endl;
 
